@@ -1,0 +1,48 @@
+class leibiao {
+    constructor() {
+            //给属性赋值
+            this.getDate()
+                //将加入购物车的方法使用事件委托
+            this.$('#liebiao').addEventListener('click', this.addCartFn.bind(this))
+        }
+        //获取数据
+    async getDate() {
+            //等待promise对象解包完成
+            let num = 15;
+            let { data, status } = await axios.get('http://localhost:8888/goods/list?pagesize=' + num)
+                // console.log(res);
+            if (status == 200) {
+                // console.log(data);
+                let html = '';
+                data.list.forEach(goods => {
+                    // console.log(goods);
+                    html += `
+                <div class="mingxing fl mb20" data-id="${goods.goods_id}" style="border:2px solid #fff;width:230px;height:400px;cursor:pointer;" onmouseout="this.style.border='2px solid #fff'" onmousemove="this.style.border='2px solid red'">
+                    <div class="sub_mingxing">
+                    <a href=""><img src="${goods.img_big_logo}" alt="" style='width:100%'></a>
+                     </div>
+                    <div class="pinpai"><a href="">${goods.title}</a></div>
+                    <div class="jiage"><b>现价:${goods.current_price} </b> <del class="shanchu">￥${goods.price}</del> <br></br>剩余:${goods.goods_number}  已售:${goods.sale_type}</div>
+                    <div class= jiaru >  <a href="#none">加入购物车</a></div>
+            </div>`
+                });
+                this.$('#liebiao').innerHTML = html;
+            }
+        }
+        //加入购物车的方法
+    addCartFn(eve) {
+        // console.log(eve.target);
+        //判断用户是否登录.如果能够获取到token,则表示登录
+        let token = localStorage.getItem('token')
+            //跳转
+        if (!token) location.assign('../login.html?ReturnUrl=../leibiao.html')
+
+
+    }
+
+    $(tag) {
+        let res = document.querySelectorAll(tag)
+        return res.length == 1 ? res[0] : res;
+    }
+}
+new leibiao
