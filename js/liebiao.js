@@ -23,20 +23,52 @@ class leibiao {
                      </div>
                     <div class="pinpai"><a href="">${goods.title}</a></div>
                     <div class="jiage"><b>现价:${goods.current_price} </b> <del class="shanchu">￥${goods.price}</del> <br></br>剩余:${goods.goods_number}  已售:${goods.sale_type}</div>
-                    <div class= jiaru >  <a href="#none">加入购物车</a></div>
+                    <div class= jiaru >  <a href="#none" class='sk_goods_buy'>加入购物车</a></div>
             </div>`
                 });
                 this.$('#liebiao').innerHTML = html;
             }
         }
         //加入购物车的方法
-    addCartFn(eve) {
+    async addCartFn(eve) {
         // console.log(eve.target);
         //判断用户是否登录.如果能够获取到token,则表示登录
         let token = localStorage.getItem('token')
             //跳转
-        if (!token) location.assign('../login.html?ReturnUrl=../leibiao.html')
+        if (!token) location.assign('./login.html?ReturnUrl=./liebiao.html')
+            //判断是否点击的是a标签
+        if (eve.target.classList.contains('sk_goods_buy')) {
+            let lisObj = eve.target.parentNode.parentNode;
+            let goodsId = lisObj.dataset.id - 0
+                // console.log(goodsId);
+            let userid = localStorage.getItem('user_id') - 0
+            if (!userid || !goodsId) throw new Error('两个id,存在问题,请打印...')
+            axios.defaults.headers.common['authorization'] = token;
+            let params = `id=${userid}&goodsId=${goodsId}`
+                //如果用户登录则将数据信息添加到购物车当中
+            let { data, status } = await axios.post('http://localhost:8888/cart/add', params)
+            console.log(data);
+            if (status == 200) {
+                if (data.code == 1) {
+                    //购买成功
+                    layer.open({
+                        content: '加入购物车',
+                        btn: ['去购物车结算 ', '留在当前页面'],
+                        yes: function(index, layero) {
+                            //按钮1的回调
+                        },
+                        btn2: function(index, layero) {
+                            //按钮2的回调
+                        }
+                    })
+                } else {
+                    //购买失败
+                }
+            }
 
+
+
+        }
 
     }
 
