@@ -55,7 +55,7 @@ class leibiao {
                         content: '加入购物车',
                         btn: ['去购物车结算 ', '留在当前页面'],
                         yes: function(index, layero) {
-                            //按钮1的回调
+                            location.assign('../gouwuche.html')
                         },
                         btn2: function(index, layero) {
                             //按钮2的回调
@@ -65,9 +65,6 @@ class leibiao {
                     //购买失败
                 }
             }
-
-
-
         }
 
     }
